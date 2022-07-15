@@ -45,7 +45,7 @@ def home():
 def precipitation():
     results = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date>="2016-08-23").all()
     results_array = list(np.ravel(results))
-    
+    session.close()
     results_dict= []
     for date,prcp in results:
         temp_dict = {}
@@ -58,6 +58,7 @@ def precipitation():
 def stations():
     results = session.query(Station.name).all()
     all_stations = list(np.ravel(results))
+    session.close()
     return jsonify(all_stations)
 
 @app.route("/api/v1.0/tobs")
@@ -67,6 +68,7 @@ def tobs():
             filter(Measurement.date<="2017-08-23").\
             filter(Measurement.station == "USC00519281")).all()
     tobs_active_station = list(np.ravel(results))
+    session.close()
     return jsonify(tobs_active_station)
 
 @app.route("/api/v1.0/start/<sdate>")
@@ -78,6 +80,7 @@ def start(sdate):
                        .group_by(Measurement.date)
                        .all())
     calc_temps = list(np.ravel(results))
+    session.close()
     return jsonify(calc_temps)
 
 @app.route("/api/v1.0/startend/<sdate>/<edate>")
@@ -90,6 +93,7 @@ def startend(sdate,edate):
                        .group_by(Measurement.date)
                        .all())
     calc_temps = list(np.ravel(results))
+    session.close()
     return jsonify(calc_temps)
 
 if __name__ == '__main__':
